@@ -5,12 +5,19 @@ import type { Telegraf } from 'telegraf';
 
 @Injectable()
 export class NotifyAdminService {
+  private readonly isDev: boolean;
+
   constructor(
     @InjectBot() private readonly bot: Telegraf,
     private readonly config: ConfigService,
-  ) {}
+  ) {
+    this.isDev = this.config.get<string>('NODE_ENV') === 'development';
+  }
 
   send(message: string, options?: { parse_mode?: 'Markdown' | 'HTML' }): void {
+    if (this.isDev) {
+      return;
+    }
     const adminId = this.config.get<string>('ADMIN_TELEGRAM_ID');
     if (!adminId) {
       return;

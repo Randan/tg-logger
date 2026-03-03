@@ -20,6 +20,8 @@ export class LoggerService {
   }
 
   warn(...args: unknown[]): void {
-    console.warn(...args);
+    if (this.isDev) {
+      console.warn(...args);
+    }
   }
 }
