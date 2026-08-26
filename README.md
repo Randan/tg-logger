@@ -20,9 +20,14 @@ npm install @nestjs/common @nestjs/config nestjs-telegraf telegraf
 
 Global NestJS module providing `LoggerService`.
 
-- `log(...args)` — logs only in development (`NODE_ENV=development`)
-- `error(...args)` — always logs to stderr
-- `warn(...args)` — always logs to stderr
+Output is controlled by the `LOG_LEVEL` environment variable — `silent`, `error`, `warn` or
+`info` (default `info`). Each method emits only when `LOG_LEVEL` is at or above its own level, so
+`LOG_LEVEL=error` keeps stderr diagnostics while muting routine chatter, and `LOG_LEVEL=silent`
+mutes everything. An unrecognised value falls back to `info`.
+
+- `log(...args)` — logs to stdout when `LOG_LEVEL=info`
+- `warn(...args)` — logs to stderr when `LOG_LEVEL` is `warn` or `info`
+- `error(...args)` — logs to stderr unless `LOG_LEVEL=silent`
 
 ### NotifyAdminModule
 
@@ -75,7 +80,7 @@ export class MyService {
 
 | Variable | Required | Description |
 |---|---|---|
-| `NODE_ENV` | No | Set to `development` to enable `log()` output |
+| `LOG_LEVEL` | No | `silent` \| `error` \| `warn` \| `info` (default `info`) |
 | `ADMIN_TELEGRAM_ID` | No | Telegram user ID for admin notifications |
 
 ## License
